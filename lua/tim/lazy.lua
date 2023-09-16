@@ -35,7 +35,15 @@ local plugins = {
             {'hrsh7th/cmp-nvim-lsp'}, -- Required
             {'L3MON4D3/LuaSnip'},     -- Required
         }
-    }
+    },
+    {'xiyaowong/transparent.nvim'},
+    {'Pocco81/auto-save.nvim',
+    config = function()
+        require("auto-save").setup {
+            -- your config goes here
+            -- or just leave it empty :)
+        }
+    end,}
 }
 
 local opts = {}
