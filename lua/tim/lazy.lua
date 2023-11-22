@@ -17,7 +17,13 @@ local plugins = {
 		'nvim-telescope/telescope.nvim', tag = '0.1.2',
 		dependencies = { 'nvim-lua/plenary.nvim' }
 	},
-	{'navarasu/onedark.nvim'},
+	--{'navarasu/onedark.nvim'},
+    {
+        'folke/tokyonight.nvim',
+        lazy = false,
+        priority = 1000,
+        opts = {},
+    },
 	{'nvim-treesitter/nvim-treesitter'},
     {'mbbill/undotree'},
     {'tpope/vim-fugitive'},
