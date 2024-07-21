@@ -14,22 +14,29 @@ vim.opt.rtp:prepend(lazypath)
 local plugins = {
 
 	{
-		'nvim-telescope/telescope.nvim', tag = '0.1.2',
-		dependencies = { 'nvim-lua/plenary.nvim' }
+		'nvim-telescope/telescope.nvim', tag = '0.1.8',
+        dependencies = { 'nvim-lua/plenary.nvim'}
 	},
+    {'nvim-tree/nvim-web-devicons'},
 	--{'navarasu/onedark.nvim'},
-    {
-        'folke/tokyonight.nvim',
-        lazy = false,
-        priority = 1000,
-        opts = {},
-    },
+    -- {
+    --     'folke/tokyonight.nvim',
+    --     lazy = false,
+    --     priority = 1000,
+    --     opts = {},
+    -- },
+    -- {
+    --     "scottmckendry/cyberdream.nvim",
+    --     lazy = false,
+    --     priority = 1000,
+    -- },
+    {'thedenisnikulin/vim-cyberpunk'},
 	{'nvim-treesitter/nvim-treesitter'},
     {'mbbill/undotree'},
     {'tpope/vim-fugitive'},
     {
         'VonHeikemen/lsp-zero.nvim',
-        branch = 'v2.x',
+        branch = 'v3.x',
         dependencies = {
             -- LSP Support
             {'neovim/nvim-lspconfig'},             -- Required
