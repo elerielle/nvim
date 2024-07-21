@@ -1,3 +1,11 @@
+<<<<<<< HEAD
+=======
+--vim.api.nvim_set_hl(0, "Normal", {bg = "none"})
+--vim.api.nvim_set_hl(0, "NormalFloat", {bg = "none"})
+
+--vim.g.transparent_enabled
+
+
 vim.opt.nu = true
 vim.opt.relativenumber = true
 
