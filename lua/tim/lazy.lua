@@ -24,6 +24,21 @@ local plugins = {
     { 'mbbill/undotree' },
     { 'tpope/vim-fugitive' },
     {
+        'folke/todo-comments.nvim',
+        dependencies = {'nvim-lua/plenary.nvim'},
+        opts = {
+            --config here
+        }
+    },
+    {
+        'ThePrimeagen/harpoon',
+        branch = 'harpoon2',
+        dependencies = {
+            { 'nvim-lua/plenary.nvim' },
+            {'nvim-telescope/telescope.nvim'}
+        }
+    },
+    {
         'VonHeikemen/lsp-zero.nvim',
         branch = 'v4.x',
         dependencies = {
@@ -38,16 +53,7 @@ local plugins = {
             { 'L3MON4D3/LuaSnip' },     -- Required
         }
     },
-    { 'xiyaowong/transparent.nvim' },
-    {
-        'Pocco81/auto-save.nvim',
-        config = function()
-            require("auto-save").setup {
-                -- your config goes here
-                -- or just leave it empty :)
-            }
-        end,
-    }
+    { 'xiyaowong/transparent.nvim' }
 }
 
 local opts = {}
