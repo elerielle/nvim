@@ -12,3 +12,13 @@ vim.keymap.set("n", "<C-j>", ":wincmd j<CR>")
 vim.keymap.set("n", "<C-k>", ":wincmd k<CR>")
 vim.keymap.set("n", "<C-l>", ":wincmd l<CR>")
 vim.keymap.set("n", "<C-h>", ":wincmd h<CR>")
+
+vim.keymap.set("n", "<leader>er", ":lua vim.diagnostic.open_float()<CR>")
+
+
+
+
+
+vim.keymap.set("n", "<leader>tr", ":lua require('neotest').run.run()<CR>")
+vim.keymap.set("n", "<leader>td", ":lua require('neotest').run.run(){strategy = 'dap'}<CR>")
+
