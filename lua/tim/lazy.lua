@@ -113,22 +113,43 @@ local plugins = {
             {'nvim-telescope/telescope.nvim'}
         }
     },
-    { 'Civitasv/cmake-tools.nvim' },
     {
-        'VonHeikemen/lsp-zero.nvim',
-        branch = 'v4.x',
-        dependencies = {
-            -- LSP Support
-            { 'neovim/nvim-lspconfig' },             -- Required
-            { 'williamboman/mason.nvim' },           -- Optional
-            { 'williamboman/mason-lspconfig.nvim' }, -- Optional
-
-            -- Autocompletion
-            { 'hrsh7th/nvim-cmp' },     -- Required
-            { 'hrsh7th/cmp-nvim-lsp' }, -- Required
-            { 'L3MON4D3/LuaSnip' },     -- Required
-        }
+        'neovim/nvim-lspconfig',
+        dependencies = { 
+            'saghen/blink.cmp' ,
+            'williamboman/mason.nvim' ,
+            'williamboman/mason-lspconfig.nvim'  ,
+        },
     },
+    {
+        'nvimdev/lspsaga.nvim'
+    },
+    { 'Civitasv/cmake-tools.nvim' },
+    -- {
+    --     'VonHeikemen/lsp-zero.nvim',
+    --     branch = 'v4.x',
+    --     dependencies = {
+    --         -- LSP Support
+    --         { 'neovim/nvim-lspconfig' },             -- Required
+    --
+    --         -- Autocompletion
+    --         -- { 'hrsh7th/nvim-cmp' },     -- Required
+    --         -- { 'hrsh7th/cmp-nvim-lsp' }, -- Required
+    --         -- { 'L3MON4D3/LuaSnip' },     -- Required
+    --     }
+    -- },
+    {
+        "saghen/blink.cmp",
+        dependencies = {
+            "rafamadriz/friendly-snippets",
+            { "L3MON4D3/LuaSnip", version = "v2.*" },
+            "giuxtaposition/blink-cmp-copilot",
+            "zbirenbaum/copilot.lua",
+        },
+        version = "*",
+        -- build = "cargo build --release",
+    },
+
     { 'xiyaowong/transparent.nvim' },
     {
         "folke/lazydev.nvim"
