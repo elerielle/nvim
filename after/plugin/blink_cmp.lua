@@ -1,34 +1,48 @@
 require("blink.cmp").setup({
 
     keymap = {
-        preset = 'enter',
-        ['<Tab>'] = {'accept', 'fallback'},
-        ['<C-Tab>'] = { 'select_next', 'snippet_forward', 'fallback'},
-        ['<S-Tab>'] = { 'select_prev', 'snippet_backward', 'fallback'},
+        preset = 'super-tab',
+        -- ['<Tab>'] = {'accept', 'fallback'},
+        -- ['<C-Tab>'] = { 'select_next', 'snippet_forward', 'fallback'},
+        -- ['<S-Tab>'] = { 'select_prev', 'snippet_backward', 'fallback'},
     },
 
-    -- completion = {
-        --     list = { selection = 'auto_insert'},
-        --     menu = { border = 'rounded' },
-        --     documentation = { window = {border = 'rounded'}},
-        -- },
-        completion = 
-        {
-            -- 'prefix' will fuzzy match on the text before the cursor
-            -- 'full' will fuzzy match on the text before *and* after the cursor
-            -- example: 'foo_|_bar' will match 'foo_' for 'prefix' and 'foo__bar' for 'full'
-            keyword = { range = 'full' },
-
-            -- Disable auto brackets
-            -- NOTE: some LSPs may add auto brackets themselves anyway
-            accept = { auto_brackets = { enabled = false }, },
-
-            -- Don't select by default, auto insert on selection    
-            list = { selection = { preselect = false, auto_insert = true } },
-            -- or set either per mode via a function
-            list = { selection = { preselect = function(ctx) return ctx.mode ~= 'cmdline' end } 
+    completion = {
+        menu = {
+            draw = {
+                -- We don't need label_description now because label and label_description are already
+                -- combined together in label by colorful-menu.nvim.
+                columns = { { "kind_icon" }, { "label", gap = 1 } },
+                components = {
+                    label = {
+                        text = function(ctx)
+                            return require("colorful-menu").blink_components_text(ctx)
+                        end,
+                        highlight = function(ctx)
+                            return require("colorful-menu").blink_components_highlight(ctx)
+                        end,
+                    },
+                },
+            },
         },
     },
+    --     completion = 
+    --     {
+    --         -- 'prefix' will fuzzy match on the text before the cursor
+    --         -- 'full' will fuzzy match on the text before *and* after the cursor
+    --         -- example: 'foo_|_bar' will match 'foo_' for 'prefix' and 'foo__bar' for 'full'
+    --         keyword = { range = 'full' },
+    --
+    --         -- Disable auto brackets
+    --         -- NOTE: some LSPs may add auto brackets themselves anyway
+    --         accept = { auto_brackets = { enabled = false }, },
+    --
+    --         -- Don't select by default, auto insert on selection    
+    --         list = { selection = { preselect = false, auto_insert = true } },
+    --         -- or set either per mode via a function
+    --         list = { selection = { preselect = function(ctx) return ctx.mode ~= 'cmdline' end } 
+    --     },
+    -- },
 
 
     signature = { 
