@@ -14,16 +14,7 @@ vim.opt.rtp:prepend(lazypath)
 local plugins = {
 
     {"xzbdmw/colorful-menu.nvim"},
-    {
-        "kylechui/nvim-surround",
-        version = "*", -- Use for stability; omit to use `main` branch for the latest features
-        event = "VeryLazy",
-        config = function()
-            require("nvim-surround").setup({
-                -- Configuration here, or leave empty to use defaults
-            })
-        end
-    },
+    { 'echasnovski/mini.nvim', version = false },
     {
         'nvim-telescope/telescope.nvim',
         tag = '0.1.8',
@@ -42,22 +33,6 @@ local plugins = {
         opts = {}
     },
     { 'nvim-tree/nvim-web-devicons' },
-    -- lazy.nvim
-    -- {
-    --     "folke/noice.nvim",
-    --     event = "VeryLazy",
-    --     opts = {
-    --         -- add any options here
-    --     },
-    --     dependencies = {
-    --         -- if you lazy-load any plugin below, make sure to add proper `module="..."` entries
-    --         "MunifTanjim/nui.nvim",
-    --         -- OPTIONAL:
-    --         --   `nvim-notify` is only needed, if you want to use the notification view.
-    --         --   If not available, we use `mini` as the fallback
-    --         "rcarriga/nvim-notify",
-    --     }
-    -- },
     {
         "nvim-neotest/neotest",
         dependencies = {
@@ -70,12 +45,6 @@ local plugins = {
             "antoinemadec/FixCursorHold.nvim",
             "nvim-treesitter/nvim-treesitter"
         }
-    },
-    {
-        "nvim-neorg/neorg",
-        lazy = false, -- Disable lazy loading as some `lazy.nvim` distributions set `lazy = true` by default
-        version = "*", -- Pin Neorg to the latest stable release
-        config = true,
     },
     {
         'mfussenegger/nvim-dap'
@@ -95,16 +64,7 @@ local plugins = {
         dependencies = { "petertriho/nvim-scrollbar" },
     },
     {      'tzachar/local-highlight.nvim'},
-    -- {'edluffy/hologram.nvim'},
-    -- {"3rd/image.nvim"},
     {'akinsho/toggleterm.nvim', version = "*", config = true},
-    -- {
-    --     "lukas-reineke/indent-blankline.nvim",
-    --     main = "ibl",
-    --     ---@module "ibl"
-    --     ---@type ibl.config
-    --     opts = {},
-    -- },
     {
         'stevearc/dressing.nvim',
         opts = {},
@@ -136,19 +96,6 @@ local plugins = {
         'nvimdev/lspsaga.nvim'
     },
     { 'Civitasv/cmake-tools.nvim' },
-    -- {
-    --     'VonHeikemen/lsp-zero.nvim',
-    --     branch = 'v4.x',
-    --     dependencies = {
-    --         -- LSP Support
-    --         { 'neovim/nvim-lspconfig' },             -- Required
-    --
-    --         -- Autocompletion
-    --         -- { 'hrsh7th/nvim-cmp' },     -- Required
-    --         -- { 'hrsh7th/cmp-nvim-lsp' }, -- Required
-    --         -- { 'L3MON4D3/LuaSnip' },     -- Required
-    --     }
-    -- },
     {
         "saghen/blink.cmp",
         dependencies = {
@@ -161,7 +108,6 @@ local plugins = {
         -- build = "cargo build --release",
     },
 
-    { 'xiyaowong/transparent.nvim' },
     {
         "folke/lazydev.nvim"
     },
