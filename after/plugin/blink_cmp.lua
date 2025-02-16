@@ -3,7 +3,7 @@ require("blink.cmp").setup({
     keymap = {
         preset = 'super-tab',
         -- ['<Tab>'] = {'accept', 'fallback'},
-        -- ['<C-Tab>'] = { 'select_next', 'snippet_forward', 'fallback'},
+        ['<C-Tab>'] = { 'select_next', 'fallback'},
         -- ['<S-Tab>'] = { 'select_prev', 'snippet_backward', 'fallback'},
     },
 
