@@ -17,11 +17,10 @@ local plugins = {
         priority = 1000,
         lazy = false,
         ---@type snacks.Config
-        opts = {
+         opts = {
             -- your configuration comes here
             -- or leave it empty to use the default settings
             -- refer to the configuration section below
-            bigfile = { enabled = true },
             dashboard = { enabled = true },
             input = { enabled = true },
             picker = { enabled = true },
@@ -35,6 +34,9 @@ local plugins = {
         keys = {
             -- Top Pickers & Explorer
             { "<leader>fs", function() Snacks.picker.smart() end, desc = "Smart Find Files" },
+            { "<leader>fg", function() Snacks.picker.grep() end, desc = "Grep" },
+            { "<leader>ff", function() Snacks.picker.files() end, desc = "Find Files" },
+            { "<leader>fb", function() Snacks.picker.buffers() end, desc = "Buffers" },
         },
     },
 
