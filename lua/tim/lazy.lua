@@ -111,14 +111,160 @@ local plugins = {
             {'nvim-telescope/telescope.nvim'}
         }
     },
+    -- Mason package manager for lsp servers, dap, etc.
+    {
+        "williamboman/mason-lspconfig.nvim",
+        config = function()
+            require("mason-lspconfig").setup({
+                ensure_installed = {
+                    "lua_ls",
+                    "rust_analyzer",
+                    "cmake",
+                    "basedpyright",
+                    "dockerls",
+                    "jsonls",
+                    "clangd",
+                    "jdtls",
+                    "buf_ls",
+                    "marksman",
+                },
+                automatic_installation = true,
+            })
+        end,
+        cond = not vim.g.vscode,
+    },
+
+    {
+        "williamboman/mason.nvim",
+        config = function()
+            require("mason").setup()
+        end,
+        cond = not vim.g.vscode,
+    },
+
+    -- Formatters
+    {
+      "stevearc/conform.nvim",
+      config = function()
+        require("conform").setup({
+          formatters_by_ft = {
+            lua = { "stylua" },
+            python = { "isort", "black" },
+            javascript = { { "prettierd", "prettier" } },
+            typescript = { { "prettierd", "prettier" } },
+            cpp = { "clang-format" },
+            c = { "clang-format" },
+            cmake = { "cmake-format" },
+            sh = { "shfmt" },
+            just = { "just" },
+            markdown = { "prettier" },
+            yaml = { "prettier" },
+            rust = { "rustfmt" },
+            html = { "prettier" },
+            xml = { "xmlformat" },
+            haskell = { "ormolu" },
+          },
+          formatters = {
+            rustfmt = { command = "cargo fmt" },
+          },
+          -- format_on_save = {
+          --   -- These options will be passed to conform.format()
+          --   timeout_ms = 500,
+          --   lsp_fallback = true,
+          -- },
+        })
+      end,
+      cond = not vim.g.vscode,
+    },
+
+    -- {
+    --     'neovim/nvim-lspconfig',
+    --     dependencies = {
+    --         'saghen/blink.cmp' ,
+    --         'williamboman/mason.nvim' ,
+    --         'williamboman/mason-lspconfig.nvim'  ,
+    --     },
+    --
+    -- },
+
     {
         'neovim/nvim-lspconfig',
-        dependencies = { 
-            'saghen/blink.cmp' ,
-            'williamboman/mason.nvim' ,
-            'williamboman/mason-lspconfig.nvim'  ,
+        dependencies = { 'saghen/blink.cmp' },
+
+        -- example using `opts` for defining servers
+        opts = {
+            servers = {
+                lua_ls = {}
+            }
         },
+
+        -- example calling setup directly for each LSP
+        config = function()
+            local capabilities = require('blink.cmp').get_lsp_capabilities()
+            local lspconfig = require('lspconfig')
+
+            lspconfig['lua_ls'].setup({ capabilities = capabilities })
+            lspconfig['clangd'].setup({capabilities = capabilities})
+        end
     },
+
+    -- clangd extensions (such as inlay hints)
+    {
+      "p00f/clangd_extensions.nvim",
+      dependencies = "neovim/nvim-lspconfig",
+    },
+
+     -- Inlay hints for various language servers
+    {
+      "lvimuser/lsp-inlayhints.nvim",
+      config = function()
+        require("lsp-inlayhints").setup({
+          inlay_hints = {
+            parameter_hints = {
+              show = true,
+              prefix = "<- ",
+              separator = ", ",
+              remove_colon_start = false,
+              remove_colon_end = true,
+            },
+            type_hints = {
+              show = true,
+              prefix = "",
+              separator = ", ",
+              remove_colon_start = false,
+              remove_colon_end = true,
+            },
+            only_current_line = false,
+            labels_separator = "  ",
+            max_len_align = false,
+            max_len_align_padding = 1,
+            highlight = "LspInlayHint",
+            priority = 0,
+          },
+          enabled_at_startup = true,
+          debug_mode = false,
+        })
+      end,
+      cond = not vim.g.vscode,
+    },
+
+    -- rust
+    {
+        'mrcjkb/rustaceanvim',
+        version = '^5', -- Recommended
+        lazy = false, -- This plugin is already lazy
+    },
+
+    -- rust crates
+    {
+      "saecki/crates.nvim",
+      dependencies = "mrcjkb/rustaceanvim",
+      requires = { "nvim-lua/plenary.nvim" },
+      config = function()
+        require("crates").setup()
+      end,
+    },
+
     {
         'nvimdev/lspsaga.nvim'
     },

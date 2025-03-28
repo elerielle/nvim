@@ -1,99 +1,314 @@
--- local lsp_zero = require('lsp-zero')
-
--- local lsp_attach = function(client, bufnr)
---     -- see :help lsp-zero-keybindings
---     -- to learn the available actions
---     --lsp_zero.default_keymaps({ buffer = bufnr })
---     local opts = { buffer = bufnr }
+-- -- local lsp_zero = require('lsp-zero')
 --
+-- -- local lsp_attach = function(client, bufnr)
+-- --     -- see :help lsp-zero-keybindings
+-- --     -- to learn the available actions
+-- --     --lsp_zero.default_keymaps({ buffer = bufnr })
+-- --     local opts = { buffer = bufnr }
+-- --
+-- -- end
+-- --
+-- -- lsp_zero.extend_lspconfig({
+-- --     sign_text = true,
+-- --     lsp_attach = lsp_attach,
+-- --     capabilities = require('blink.cmp').default_capabilities(),
+-- --     float_border = 'rounded',
+-- -- })
+-- --
+-- -- local cmp = require('cmp')
+-- -- local cmp_action = require('lsp-zero').cmp_action()
+-- -- cmp.setup({
+-- --     window = {
+-- --         completion = cmp.config.window.bordered(),
+-- --         documentation = cmp.config.window.bordered(),
+-- --     },
+-- --     sources = {
+-- --         { name = 'nvim_lsp' },
+-- --     },
+-- --     snippet = {
+-- --         expand = function(args)
+-- --             vim.snippet.expand(args.body)
+-- --         end,
+-- --     },
+-- --     mapping = cmp.mapping.preset.insert({
+-- --         -- `Enter` key to confirm completion
+-- --         ['<CR>'] = cmp.mapping.confirm({ select = false }),
+-- --
+-- --         -- Ctrl+Space to trigger completion menu
+-- --         ['<C-Space>'] = cmp.mapping.complete(),
+-- --
+-- --         ['<Tab>'] = cmp_action.tab_complete(),
+-- --         ['<S-Tab>'] = cmp.mapping.select_prev_item({ behaviour = 'select' }),
+-- --     }),
+-- -- })
+-- --
+-- -- require('mason').setup({})
+-- -- require('mason-lspconfig').setup({
+-- --     ensure_installed = { 'clangd', 'lua_ls' },
+-- --     handlers = {
+-- --         function(server_name)
+-- --             require('lspconfig')[server_name].setup({})
+-- --         end,
+-- --
+-- --         -- server setups go here
+-- --         clangd = function()
+-- --             require('lspconfig').clangd.setup({
+-- --             })
+-- --         end,
+-- --
+-- --         lua_ls = function()
+-- --             require('lspconfig').lua_ls.setup(lsp_zero.nvim_lua_ls())
+-- --         end,
+-- --         --
+-- --     },
+-- -- })
+--
+--     --require("lspconfig").setup({
+--
+-- local M = {}
+-- function M.setup()
+--     vim.fn.sign_define("DiagnosticSignError", { text = " ", texthl = "DiagnosticSignError" })
+--     vim.fn.sign_define("DiagnosticSignWarn", { text = " ", texthl = "DiagnosticSignWarn" })
+--     vim.fn.sign_define("DiagnosticSignInfo", { text = " ", texthl = "DiagnosticSignInfo" })
+--     vim.fn.sign_define("DiagnosticSignHint", { text = "", texthl = "DiagnosticSignHint" })
+--
+--
+--     local lspconfig = require("lspconfig")
+--     local capabilities = require("blink.cmp").get_lsp_capabilities()
+--     local clangd_executable = vim.fn.glob(mason_registry.get_package("clangd"):get_install_path() .. "/clangd_*") .. "/bin/clangd"
+--
+--     lspconfig.clangd.setup({
+--         capabilities = capabilities,
+--     })
+--
+--     lspconfig.lua_ls.setup({
+--         capabilities = capabilities,
+--     })
+--
+--     lspconfig.rust_analyzer.setup {
+--   -- Server-specific settings. See `:help lspconfig-setup`
+--   settings = {
+--     ['rust-analyzer'] = {},
+--   },
+--   capabilities = capabilities,
+-- }
+-- lspconfig.buf_ls.setup({})
 -- end
 --
--- lsp_zero.extend_lspconfig({
---     sign_text = true,
---     lsp_attach = lsp_attach,
---     capabilities = require('blink.cmp').default_capabilities(),
---     float_border = 'rounded',
--- })
 --
--- local cmp = require('cmp')
--- local cmp_action = require('lsp-zero').cmp_action()
--- cmp.setup({
---     window = {
---         completion = cmp.config.window.bordered(),
---         documentation = cmp.config.window.bordered(),
+-- --})
+-- return M
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+-- local M = {}
+--
+-- local navic = require("nvim-navic")
+-- local util = require("lspconfig.util")
+--
+-- local function on_attach(client, bufnr)
+--   navic.attach(client, bufnr)
+-- end
+--
+-- function M.setup()
+--   vim.fn.sign_define("DiagnosticSignError", { text = " ", texthl = "DiagnosticSignError" })
+--   vim.fn.sign_define("DiagnosticSignWarn", { text = " ", texthl = "DiagnosticSignWarn" })
+--   vim.fn.sign_define("DiagnosticSignInfo", { text = " ", texthl = "DiagnosticSignInfo" })
+--   vim.fn.sign_define("DiagnosticSignHint", { text = "", texthl = "DiagnosticSignHint" })
+--
+--   local lspconfig = require("lspconfig")
+--   local capabilities = require("blink.cmp").get_lsp_capabilities()
+--   local mason_registry = require("mason-registry")
+--
+--   -- Clangd
+--   local clangd_executable = vim.fn.glob(mason_registry.get_package("clangd"):get_install_path() .. "/clangd_*")
+--     .. "/bin/clangd"
+--
+--   lspconfig.clangd.setup({
+--     filetypes = { "c", "cpp", "cc", "mpp", "ixx", "objc", "objcpp", "cuda" },
+--     cmd = {
+--       clangd_executable,
+--       "--query-driver=/**/*",
+--       "--clang-tidy",
+--       "--header-insertion=never",
+--       "--offset-encoding=utf-16",
 --     },
---     sources = {
---         { name = 'nvim_lsp' },
+--     capabilities = capabilities,
+--     on_attach = function(client, bufnr)
+--       navic.attach(client, bufnr)
+--       require("clangd_extensions.inlay_hints").setup_autocmd()
+--       require("clangd_extensions.inlay_hints").set_inlay_hints()
+--     end,
+--   })
+--
+--   -- Lua
+--   lspconfig.lua_ls.setup({
+--     capabilities = capabilities,
+--     on_attach = on_attach,
+--     settings = {
+--       Lua = {
+--         diagnostics = {
+--           globals = { "vim", "use" },
+--         },
+--       },
 --     },
---     snippet = {
---         expand = function(args)
---             vim.snippet.expand(args.body)
---         end,
+--   })
+--
+--   -- remove errors regarding json5 comments
+--   local opd = vim.lsp.with(vim.lsp.diagnostic.on_publish_diagnostics)
+--   lspconfig.jsonls.setup({
+--     capabilities = capabilities,
+--     filetypes = { "json", "jsonc", "json5" },
+--     init_options = {
+--       provideFormatter = false,
 --     },
---     mapping = cmp.mapping.preset.insert({
---         -- `Enter` key to confirm completion
---         ['<CR>'] = cmp.mapping.confirm({ select = false }),
---
---         -- Ctrl+Space to trigger completion menu
---         ['<C-Space>'] = cmp.mapping.complete(),
---
---         ['<Tab>'] = cmp_action.tab_complete(),
---         ['<S-Tab>'] = cmp.mapping.select_prev_item({ behaviour = 'select' }),
---     }),
--- })
---
--- require('mason').setup({})
--- require('mason-lspconfig').setup({
---     ensure_installed = { 'clangd', 'lua_ls' },
 --     handlers = {
---         function(server_name)
---             require('lspconfig')[server_name].setup({})
---         end,
---
---         -- server setups go here
---         clangd = function()
---             require('lspconfig').clangd.setup({
---             })
---         end,
---
---         lua_ls = function()
---             require('lspconfig').lua_ls.setup(lsp_zero.nvim_lua_ls())
---         end,
---         --
+--       ["textDocument/publishDiagnostics"] = function(err, result, ctx, config)
+--         if result.diagnostics ~= nil then
+--           local idx = 1
+--           while idx <= #result.diagnostics do
+--             -- "Comments are not permitted in JSON."
+--             if result.diagnostics[idx].code == 521 then
+--               table.remove(result.diagnostics, idx)
+--             else
+--               idx = idx + 1
+--             end
+--           end
+--         end
+--         opd(err, result, ctx, config)
+--       end,
 --     },
--- })
-
-    --require("lspconfig").setup({
-
-local M = {}
-function M.setup()
-    vim.fn.sign_define("DiagnosticSignError", { text = " ", texthl = "DiagnosticSignError" })
-    vim.fn.sign_define("DiagnosticSignWarn", { text = " ", texthl = "DiagnosticSignWarn" })
-    vim.fn.sign_define("DiagnosticSignInfo", { text = " ", texthl = "DiagnosticSignInfo" })
-    vim.fn.sign_define("DiagnosticSignHint", { text = "", texthl = "DiagnosticSignHint" })
-
-
-    local lspconfig = require("lspconfig")
-    local capabilities = require("blink.cmp").get_lsp_capabilities()
-
-    lspconfig.clangd.setup({
-        capabilities = capabilities,
-    })
-
-    lspconfig.lua_ls.setup({
-        capabilities = capabilities,
-    })
-
-    lspconfig.rust_analyzer.setup {
-  -- Server-specific settings. See `:help lspconfig-setup`
-  settings = {
-    ['rust-analyzer'] = {},
-  },
-  capabilities = capabilities,
-}
-lspconfig.buf_ls.setup({})
-end
-
-
---})
-return M
+--   })
+--
+--   -- Java
+--
+--   vim.api.nvim_create_autocmd({ "BufEnter", "BufWinEnter" }, {
+--     pattern = "*.java",
+--     callback = function()
+--       local jdtls_path = mason_registry.get_package("jdtls"):get_install_path()
+--       local debug_adapter = mason_registry.get_package("java-debug-adapter"):get_install_path()
+--       local test_path = mason_registry.get_package("java-test"):get_install_path()
+--       local root_dir = vim.fs.dirname(vim.fs.find({ "gradlew", ".git", "mvnw" }, { upward = true })[1])
+--       local equinox_launcher = vim.fn.glob(jdtls_path .. "/plugins/org.eclipse.equinox.launcher_*.jar")
+--       local system = vim.fn.has("mac") == 1 and "mac" or vim.fn.has("win32") == 1 and "win" or "linux"
+--
+--       local runtimes = system == "mac" and vim.notify("No runtimes configured for Mac!", vim.log.levels.WARN)
+--         or {
+--           {
+--             name = "JavaSE-11",
+--             path = "/usr/lib/jvm/java-11-openjdk-amd64/",
+--           },
+--           {
+--             name = "JavaSE-17",
+--             path = "/usr/lib/jvm/java-17-openjdk-amd64/",
+--           },
+--         }
+--
+--       -- Debugging
+--       local bundles = {
+--         vim.fn.glob(debug_adapter .. "/extension/server/com.microsoft.java.debug.plugin-*.jar", true),
+--       }
+--
+--       local extensions = vim.split(vim.fn.glob(test_path .. "/extension/server/*.jar", true), "\n")
+--       for _, extension in ipairs(extensions) do
+--         -- as of apr/23 this extension throws an error (albeit harmless)
+--         if not vim.endswith(extension, "com.microsoft.java.test.runner-jar-with-dependencies.jar") then
+--           table.insert(bundles, extension)
+--         end
+--       end
+--
+--       local config = {
+--         cmd = {
+--           "java",
+--           "-Declipse.application=org.eclipse.jdt.ls.core.id1",
+--           "-Dosgi.bundles.defaultStartLevel=4",
+--           "-Declipse.product=org.eclipse.jdt.ls.core.product",
+--           "-Dlog.protocol=true",
+--           "-Dlog.level=ALL",
+--           "-javaagent:" .. jdtls_path .. "/lombok.jar",
+--           "-Xmx1g",
+--           "--add-modules=ALL-SYSTEM",
+--           "--add-opens",
+--           "java.base/java.util=ALL-UNNAMED",
+--           "--add-opens",
+--           "java.base/java.lang=ALL-UNNAMED",
+--           "-jar",
+--           equinox_launcher,
+--           "-configuration",
+--           jdtls_path .. "/config_" .. system,
+--           "-data",
+--           "/tmp/jdtls_data/" .. root_dir:gsub("/", "_"),
+--         },
+--         root_dir = root_dir,
+--         settings = {
+--           java = {
+--             configuration = {
+--               runtimes = runtimes,
+--             },
+--           },
+--         },
+--         init_options = {
+--           -- Enable debugging
+--           bundles = bundles,
+--         },
+--       }
+--
+--       require("jdtls").start_or_attach(config)
+--     end,
+--   })
+--
+--   lspconfig.cmake.setup({ on_attach = on_attach, capabilities = capabilities })
+--   lspconfig.dockerls.setup({ capabilities = capabilities, on_attach = on_attach })
+--   lspconfig.jsonls.setup({ capabilities = capabilities, on_attach = on_attach })
+--   lspconfig.basedpyright.setup({
+--     on_attach = on_attach,
+--     capabilities = capabilities,
+--     single_file_support = true,
+--     root_dir = function(fname)
+--       return util.root_pattern(
+--         ".git",
+--         ".gitignore",
+--         ".gimodules",
+--         ".gitlab-ci.yml",
+--         ".pre-commit-config.yml",
+--         ".pre-commit-config.yaml",
+--         "setup.py",
+--         "main.py",
+--         "setup.cfg",
+--         "pyproject.toml",
+--         "requirements.txt"
+--       )(fname) or util.path.dirname(fname)
+--     end,
+--     settings = {
+--       pyright = {
+--         disableLanguageServices = false,
+--         disableOrganizeImports = false,
+--       },
+--       python = {
+--         analysis = {
+--           exclude = { "**/__pycache__/**", "**/.git/**" },
+--           autoImportCompletions = true,
+--           autoSearchPaths = true,
+--           diagnosticMode = "openFilesOnly", -- openFilesOnly, workspace
+--           typeCheckingMode = "basic", -- off, basic, strict
+--           useLibraryCodeForTypes = true,
+--         },
+--       },
+--     },
+--   })
+--
+--   lspconfig.buf_ls.setup({})
+--
+--   lspconfig.marksman.setup({})
+-- end
+--
+-- return M

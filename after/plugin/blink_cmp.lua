@@ -26,25 +26,6 @@ require("blink.cmp").setup({
             },
         },
     },
-    --     completion = 
-    --     {
-    --         -- 'prefix' will fuzzy match on the text before the cursor
-    --         -- 'full' will fuzzy match on the text before *and* after the cursor
-    --         -- example: 'foo_|_bar' will match 'foo_' for 'prefix' and 'foo__bar' for 'full'
-    --         keyword = { range = 'full' },
-    --
-    --         -- Disable auto brackets
-    --         -- NOTE: some LSPs may add auto brackets themselves anyway
-    --         accept = { auto_brackets = { enabled = false }, },
-    --
-    --         -- Don't select by default, auto insert on selection    
-    --         list = { selection = { preselect = false, auto_insert = true } },
-    --         -- or set either per mode via a function
-    --         list = { selection = { preselect = function(ctx) return ctx.mode ~= 'cmdline' end } 
-    --     },
-    -- },
-
-
     signature = { 
         window = {border = 'rounded' },
     },
@@ -56,8 +37,41 @@ require("blink.cmp").setup({
         use_nvim_cmp_as_default = true,
         -- Set to 'mono' for 'Nerd Font Mono' or 'normal' for 'Nerd Font'
         -- Adjusts spacing to ensure icons are aligned
-        nerd_font_variant = 'normal'
-    },
+        nerd_font_variant = "mono",
+        kind_icons = {
+            Copilot = "",
+            Text = "󰉿",
+            Method = "󰊕",
+            Function = "󰊕",
+            Constructor = "󰒓",
+
+            Field = "󰜢",
+            Variable = "󰆦",
+            Property = "󰖷",
+
+            Class = "󱡠",
+            Interface = "󱡠",
+            Struct = "󱡠",
+            Module = "󰅩",
+
+            Unit = "󰪚",
+            Value = "󰦨",
+            Enum = "󰦨",
+            EnumMember = "󰦨",
+
+            Keyword = "󰻾",
+            Constant = "󰏿",
+
+            Snippet = "󱄽",
+            Color = "󰏘",
+            File = "󰈔",
+            Reference = "󰬲",
+            Folder = "󰉋",
+            Event = "󱐋",
+            Operator = "󰪚",
+            TypeParameter = "󰬛",
+        },
+    }, 
 
     -- Default list of enabled providers defined so that you can extend it
     -- elsewhere in your config, without redefining it, due to `opts_extend`
@@ -97,32 +111,29 @@ require("blink.cmp").setup({
                                         -- end
 
                                     })
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 --
---dav
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
 
--- require ("blink.cmp").setup({
+-- require("blink.cmp").setup({
 --
 --   signature = { enabled = true },
 --
 --   snippets = { preset = "luasnip" },
 --
 --   sources = {
---     default = { "lsp", "path", "snippets", "buffer", "copilot" },
+--     default = { "lsp", "path", "snippets", "buffer", "copilot", "markdown" },
 --     providers = {
 --       copilot = {
 --         name = "copilot",
@@ -138,6 +149,11 @@ require("blink.cmp").setup({
 --           end
 --           return items
 --         end,
+--       },
+--       markdown = {
+--         name = "RenderMarkdown",
+--         module = "render-markdown.integ.blink",
+--         fallbacks = { "lsp" },
 --       },
 --     },
 --   },
@@ -258,4 +274,4 @@ require("blink.cmp").setup({
 --     },
 --   },
 -- })
---
+
