@@ -202,9 +202,55 @@ local plugins = {
         config = function()
             local capabilities = require('blink.cmp').get_lsp_capabilities()
             local lspconfig = require('lspconfig')
+            local util = require('lspconfig.util')
+            local navic = require("nvim-navic")
+            local function on_attach(client, bufnr)
+                navic.attach(client, bufnr)
+            end
+
 
             lspconfig['lua_ls'].setup({ capabilities = capabilities })
             lspconfig['clangd'].setup({capabilities = capabilities})
+            lspconfig['rust_analyzer'].setup({capabilities = capabilities})
+            lspconfig.dockerls.setup({ capabilities = capabilities, on_attach = on_attach })
+            lspconfig.jsonls.setup({ capabilities = capabilities, on_attach = on_attach })
+            lspconfig.basedpyright.setup({
+                on_attach = on_attach,
+                capabilities = capabilities,
+                single_file_support = true,
+                root_dir = function(fname)
+                    return util.root_pattern(
+                    ".git",
+                    ".gitignore",
+                    ".gimodules",
+                    ".gitlab-ci.yml",
+                    ".pre-commit-config.yml",
+                    ".pre-commit-config.yaml",
+                    "setup.py",
+                    "main.py",
+                    "setup.cfg",
+                    "pyproject.toml",
+                    "requirements.txt"
+                    )(fname) or vim.fs.dirname(fname)
+                end,
+                settings = {
+                    pyright = {
+                        disableLanguageServices = false,
+                        disableOrganizeImports = false,
+                    },
+                    python = {
+                        analysis = {
+                            exclude = { "**/__pycache__/**", "**/.git/**" },
+                            autoImportCompletions = true,
+                            autoSearchPaths = true,
+                            diagnosticMode = "openFilesOnly", -- openFilesOnly, workspace
+                            typeCheckingMode = "basic", -- off, basic, strict
+                            useLibraryCodeForTypes = true,
+                        },
+                    },
+                },
+            })
+
         end
     },
 
