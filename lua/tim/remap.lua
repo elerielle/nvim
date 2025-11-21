@@ -15,6 +15,9 @@ vim.keymap.set("n", "<C-h>", ":wincmd h<CR>")
 
 vim.keymap.set("n", "<leader>er", ":lua vim.diagnostic.open_float()<CR>")
 
+vim.keymap.set("n", "<leader>vs", ":vsplit<CR>")
+vim.keymap.set("n", "<leader>hs", ":split<CR>")
+
 
 
 

@@ -17,7 +17,7 @@ local plugins = {
         priority = 1000,
         lazy = false,
         ---@type snacks.Config
-         opts = {
+        opts = {
             -- your configuration comes here
             -- or leave it empty to use the default settings
             -- refer to the configuration section below
@@ -29,19 +29,25 @@ local plugins = {
             scope = { enabled = true },
             statuscolumn = { enabled = true },
             words = { enabled = true },
-            image = {enabled = true},
+            image = { enabled = true },
         },
         keys = {
             -- Top Pickers & Explorer
-            { "<leader>fs", function() Snacks.picker.smart() end, desc = "Smart Find Files" },
-            { "<leader>fg", function() Snacks.picker.grep() end, desc = "Grep" },
-            { "<leader>ff", function() Snacks.picker.files() end, desc = "Find Files" },
+            { "<leader>fs", function() Snacks.picker.smart() end,   desc = "Smart Find Files" },
+            { "<leader>fg", function() Snacks.picker.grep() end,    desc = "Grep" },
+            { "<leader>ff", function() Snacks.picker.files() end,   desc = "Find Files" },
             { "<leader>fb", function() Snacks.picker.buffers() end, desc = "Buffers" },
         },
     },
 
-    {"xzbdmw/colorful-menu.nvim"},
-    { 'echasnovski/mini.nvim', version = false },
+    { "xzbdmw/colorful-menu.nvim" },
+    {
+        'nvim-java/nvim-java',
+        config = function()
+            require('java').setup({})
+        end,
+    },
+    { 'echasnovski/mini.nvim',    version = false },
     {
         'nvim-telescope/telescope.nvim',
         tag = '0.1.8',
@@ -76,13 +82,14 @@ local plugins = {
     {
         'mfussenegger/nvim-dap'
     },
-    { "rcarriga/nvim-dap-ui", dependencies = {"mfussenegger/nvim-dap", "nvim-neotest/nvim-nio"} },
+    { "rcarriga/nvim-dap-ui",           dependencies = { "mfussenegger/nvim-dap", "nvim-neotest/nvim-nio" } },
     -- { 'thedenisnikulin/vim-cyberpunk' },
-    { "catppuccin/nvim", name = "catppuccin", priority = 1000 },
+    { "catppuccin/nvim",                name = "catppuccin",                                                priority = 1000 },
     { 'nvim-treesitter/nvim-treesitter' },
     { 'mbbill/undotree' },
-    { "ggandor/leap.nvim",
-      dependencies = {"tpope/vim-repeat"},
+    {
+        "ggandor/leap.nvim",
+        dependencies = { "tpope/vim-repeat" },
     },
     { 'tpope/vim-fugitive' },
     -- Highlight git changes in statuscol
@@ -90,15 +97,15 @@ local plugins = {
         "lewis6991/gitsigns.nvim",
         dependencies = { "petertriho/nvim-scrollbar" },
     },
-    {      'tzachar/local-highlight.nvim'},
-    {'akinsho/toggleterm.nvim', version = "*", config = true},
+    { 'tzachar/local-highlight.nvim' },
+    { 'akinsho/toggleterm.nvim',     version = "*", config = true },
     {
         'stevearc/dressing.nvim',
         opts = {},
     },
     {
         'folke/todo-comments.nvim',
-        dependencies = {'nvim-lua/plenary.nvim'},
+        dependencies = { 'nvim-lua/plenary.nvim' },
         opts = {
             --config here
         }
@@ -108,7 +115,7 @@ local plugins = {
         branch = 'harpoon2',
         dependencies = {
             { 'nvim-lua/plenary.nvim' },
-            {'nvim-telescope/telescope.nvim'}
+            { 'nvim-telescope/telescope.nvim' }
         }
     },
     -- Mason package manager for lsp servers, dap, etc.
@@ -124,7 +131,6 @@ local plugins = {
                     "dockerls",
                     "jsonls",
                     "clangd",
-                    "jdtls",
                     "buf_ls",
                     "marksman",
                 },
@@ -144,37 +150,37 @@ local plugins = {
 
     -- Formatters
     {
-      "stevearc/conform.nvim",
-      config = function()
-        require("conform").setup({
-          formatters_by_ft = {
-            lua = { "stylua" },
-            python = { "isort", "black" },
-            javascript = { { "prettierd", "prettier" } },
-            typescript = { { "prettierd", "prettier" } },
-            cpp = { "clang-format" },
-            c = { "clang-format" },
-            cmake = { "cmake-format" },
-            sh = { "shfmt" },
-            just = { "just" },
-            markdown = { "prettier" },
-            yaml = { "prettier" },
-            rust = { "rustfmt" },
-            html = { "prettier" },
-            xml = { "xmlformat" },
-            haskell = { "ormolu" },
-          },
-          formatters = {
-            rustfmt = { command = "cargo fmt" },
-          },
-          -- format_on_save = {
-          --   -- These options will be passed to conform.format()
-          --   timeout_ms = 500,
-          --   lsp_fallback = true,
-          -- },
-        })
-      end,
-      cond = not vim.g.vscode,
+        "stevearc/conform.nvim",
+        config = function()
+            require("conform").setup({
+                formatters_by_ft = {
+                    lua = { "stylua" },
+                    python = { "isort", "black" },
+                    javascript = { { "prettierd", "prettier" } },
+                    typescript = { { "prettierd", "prettier" } },
+                    cpp = { "clang-format" },
+                    c = { "clang-format" },
+                    cmake = { "cmake-format" },
+                    sh = { "shfmt" },
+                    just = { "just" },
+                    markdown = { "prettier" },
+                    yaml = { "prettier" },
+                    rust = { "rustfmt" },
+                    html = { "prettier" },
+                    xml = { "xmlformat" },
+                    haskell = { "ormolu" },
+                },
+                formatters = {
+                    rustfmt = { command = "cargo fmt" },
+                },
+                -- format_on_save = {
+                --   -- These options will be passed to conform.format()
+                --   timeout_ms = 500,
+                --   lsp_fallback = true,
+                -- },
+            })
+        end,
+        cond = not vim.g.vscode,
     },
 
     -- {
@@ -189,7 +195,7 @@ local plugins = {
 
     {
         'neovim/nvim-lspconfig',
-        dependencies = { 'saghen/blink.cmp' },
+        dependencies = { 'saghen/blink.cmp', 'mfussenegger/nvim-jdtls' },
 
         -- example using `opts` for defining servers
         opts = {
@@ -198,10 +204,12 @@ local plugins = {
             }
         },
 
+
         -- example calling setup directly for each LSP
         config = function()
             local capabilities = require('blink.cmp').get_lsp_capabilities()
             local lspconfig = require('lspconfig')
+            local java = require('lspconfig').jdtls.setup({})
             local util = require('lspconfig.util')
             local navic = require("nvim-navic")
             local function on_attach(client, bufnr)
@@ -210,8 +218,8 @@ local plugins = {
 
 
             lspconfig['lua_ls'].setup({ capabilities = capabilities })
-            lspconfig['clangd'].setup({capabilities = capabilities})
-            lspconfig['rust_analyzer'].setup({capabilities = capabilities})
+            lspconfig['clangd'].setup({ capabilities = capabilities })
+            lspconfig['rust_analyzer'].setup({ capabilities = capabilities })
             lspconfig.dockerls.setup({ capabilities = capabilities, on_attach = on_attach })
             lspconfig.jsonls.setup({ capabilities = capabilities, on_attach = on_attach })
             lspconfig.basedpyright.setup({
@@ -220,17 +228,17 @@ local plugins = {
                 single_file_support = true,
                 root_dir = function(fname)
                     return util.root_pattern(
-                    ".git",
-                    ".gitignore",
-                    ".gimodules",
-                    ".gitlab-ci.yml",
-                    ".pre-commit-config.yml",
-                    ".pre-commit-config.yaml",
-                    "setup.py",
-                    "main.py",
-                    "setup.cfg",
-                    "pyproject.toml",
-                    "requirements.txt"
+                        ".git",
+                        ".gitignore",
+                        ".gimodules",
+                        ".gitlab-ci.yml",
+                        ".pre-commit-config.yml",
+                        ".pre-commit-config.yaml",
+                        "setup.py",
+                        "main.py",
+                        "setup.cfg",
+                        "pyproject.toml",
+                        "requirements.txt"
                     )(fname) or vim.fs.dirname(fname)
                 end,
                 settings = {
@@ -244,71 +252,70 @@ local plugins = {
                             autoImportCompletions = true,
                             autoSearchPaths = true,
                             diagnosticMode = "openFilesOnly", -- openFilesOnly, workspace
-                            typeCheckingMode = "basic", -- off, basic, strict
+                            typeCheckingMode = "basic",       -- off, basic, strict
                             useLibraryCodeForTypes = true,
                         },
                     },
                 },
             })
-
         end
     },
 
     -- clangd extensions (such as inlay hints)
     {
-      "p00f/clangd_extensions.nvim",
-      dependencies = "neovim/nvim-lspconfig",
+        "p00f/clangd_extensions.nvim",
+        dependencies = "neovim/nvim-lspconfig",
     },
 
-     -- Inlay hints for various language servers
+    -- Inlay hints for various language servers
     {
-      "lvimuser/lsp-inlayhints.nvim",
-      config = function()
-        require("lsp-inlayhints").setup({
-          inlay_hints = {
-            parameter_hints = {
-              show = true,
-              prefix = "<- ",
-              separator = ", ",
-              remove_colon_start = false,
-              remove_colon_end = true,
-            },
-            type_hints = {
-              show = true,
-              prefix = "",
-              separator = ", ",
-              remove_colon_start = false,
-              remove_colon_end = true,
-            },
-            only_current_line = false,
-            labels_separator = "  ",
-            max_len_align = false,
-            max_len_align_padding = 1,
-            highlight = "LspInlayHint",
-            priority = 0,
-          },
-          enabled_at_startup = true,
-          debug_mode = false,
-        })
-      end,
-      cond = not vim.g.vscode,
+        "lvimuser/lsp-inlayhints.nvim",
+        config = function()
+            require("lsp-inlayhints").setup({
+                inlay_hints = {
+                    parameter_hints = {
+                        show = true,
+                        prefix = "<- ",
+                        separator = ", ",
+                        remove_colon_start = false,
+                        remove_colon_end = true,
+                    },
+                    type_hints = {
+                        show = true,
+                        prefix = "",
+                        separator = ", ",
+                        remove_colon_start = false,
+                        remove_colon_end = true,
+                    },
+                    only_current_line = false,
+                    labels_separator = "  ",
+                    max_len_align = false,
+                    max_len_align_padding = 1,
+                    highlight = "LspInlayHint",
+                    priority = 0,
+                },
+                enabled_at_startup = true,
+                debug_mode = false,
+            })
+        end,
+        cond = not vim.g.vscode,
     },
 
     -- rust
     {
         'mrcjkb/rustaceanvim',
         version = '^5', -- Recommended
-        lazy = false, -- This plugin is already lazy
+        lazy = false,   -- This plugin is already lazy
     },
 
     -- rust crates
     {
-      "saecki/crates.nvim",
-      dependencies = "mrcjkb/rustaceanvim",
-      requires = { "nvim-lua/plenary.nvim" },
-      config = function()
-        require("crates").setup()
-      end,
+        "saecki/crates.nvim",
+        dependencies = "mrcjkb/rustaceanvim",
+        requires = { "nvim-lua/plenary.nvim" },
+        config = function()
+            require("crates").setup()
+        end,
     },
 
     {
