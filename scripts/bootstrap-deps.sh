@@ -28,6 +28,7 @@ require_cmd python3
 require_cmd gem
 require_cmd cpanm
 require_cmd rg
+require_cmd git
 
 log "Installing Neovim provider dependencies"
 run npm install -g neovim
@@ -40,9 +41,11 @@ run cpanm --quiet --notest Neovim::Ext
 log "Syncing plugins and running plugin build hooks"
 run nvim --headless -u "$INIT_LUA" '+Lazy! sync' '+qa'
 
-MD_PREVIEW_APP="$HOME/.local/share/nvim/lazy/markdown-preview.nvim/app"
+MD_PREVIEW_DIR="$HOME/.local/share/nvim/lazy/markdown-preview.nvim"
+MD_PREVIEW_APP="$MD_PREVIEW_DIR/app"
 if [[ -d "$MD_PREVIEW_APP" ]]; then
-  run npm --prefix "$MD_PREVIEW_APP" install
+  run npm --prefix "$MD_PREVIEW_APP" install --no-package-lock
+  run git -C "$MD_PREVIEW_DIR" checkout -- app/yarn.lock
 else
   log "markdown-preview app directory not found: $MD_PREVIEW_APP"
   log "Re-run after Lazy sync succeeds."

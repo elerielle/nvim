@@ -82,7 +82,6 @@ local plugins = {
             "alfaix/neotest-gtest",
             "nvim-neotest/neotest-python",
             "mrcjkb/rustaceanvim",
-            "rcasia/neotest-java",
             "antoinemadec/FixCursorHold.nvim",
             "nvim-treesitter/nvim-treesitter"
         }
@@ -91,7 +90,6 @@ local plugins = {
         'mfussenegger/nvim-dap'
     },
     { "theHamsta/nvim-dap-virtual-text", opts = {}, dependencies = { "mfussenegger/nvim-dap" } },
-    { "mfussenegger/nvim-jdtls", ft = { "java" } },
     { "rcarriga/nvim-dap-ui",           dependencies = { "mfussenegger/nvim-dap", "nvim-neotest/nvim-nio" } },
     -- { 'thedenisnikulin/vim-cyberpunk' },
     { "catppuccin/nvim",                name = "catppuccin",                                                priority = 1000 },
@@ -132,7 +130,7 @@ local plugins = {
         "iamcco/markdown-preview.nvim",
         cmd = { "MarkdownPreviewToggle", "MarkdownPreview", "MarkdownPreviewStop" },
         ft = { "markdown" },
-        build = "cd app && npm install",
+        build = "cd app && npm install --no-package-lock && cd .. && git checkout -- app/yarn.lock",
         init = function()
             vim.g.mkdp_filetypes = { "markdown" }
         end,
