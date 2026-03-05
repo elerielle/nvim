@@ -16,6 +16,9 @@ local plugins = {
         "folke/snacks.nvim",
         priority = 1000,
         lazy = false,
+        cond = function()
+            return #vim.api.nvim_list_uis() > 0
+        end,
         ---@type snacks.Config
         opts = {
             -- your configuration comes here
@@ -43,6 +46,11 @@ local plugins = {
     { "xzbdmw/colorful-menu.nvim" },
     {
         'nvim-java/nvim-java',
+        lazy = false,
+        priority = 1002,
+        cond = function()
+            return #vim.api.nvim_list_uis() > 0
+        end,
         config = function()
             require('java').setup({})
         end,
@@ -88,7 +96,7 @@ local plugins = {
     { 'nvim-treesitter/nvim-treesitter' },
     { 'mbbill/undotree' },
     {
-        "ggandor/leap.nvim",
+        url = "https://codeberg.org/andyg/leap.nvim",
         dependencies = { "tpope/vim-repeat" },
     },
     { 'tpope/vim-fugitive' },
@@ -118,6 +126,15 @@ local plugins = {
             { 'nvim-telescope/telescope.nvim' }
         }
     },
+    {
+        "iamcco/markdown-preview.nvim",
+        cmd = { "MarkdownPreviewToggle", "MarkdownPreview", "MarkdownPreviewStop" },
+        ft = { "markdown" },
+        build = "cd app && npm install",
+        init = function()
+            vim.g.mkdp_filetypes = { "markdown" }
+        end,
+    },
     -- Mason package manager for lsp servers, dap, etc.
     {
         "williamboman/mason-lspconfig.nvim",
@@ -125,7 +142,6 @@ local plugins = {
             require("mason-lspconfig").setup({
                 ensure_installed = {
                     "lua_ls",
-                    "rust_analyzer",
                     "cmake",
                     "basedpyright",
                     "dockerls",
@@ -134,7 +150,8 @@ local plugins = {
                     "buf_ls",
                     "marksman",
                 },
-                automatic_installation = true,
+                -- Prevent duplicate LSP clients: servers are configured manually below.
+                automatic_enable = false,
             })
         end,
         cond = not vim.g.vscode,
@@ -195,52 +212,115 @@ local plugins = {
 
     {
         'neovim/nvim-lspconfig',
-        dependencies = { 'saghen/blink.cmp', 'mfussenegger/nvim-jdtls' },
-
-        -- example using `opts` for defining servers
-        opts = {
-            servers = {
-                lua_ls = {}
-            }
-        },
-
-
-        -- example calling setup directly for each LSP
+        dependencies = { 'saghen/blink.cmp' },
         config = function()
             local capabilities = require('blink.cmp').get_lsp_capabilities()
-            local lspconfig = require('lspconfig')
-            local java = require('lspconfig').jdtls.setup({})
-            local util = require('lspconfig.util')
             local navic = require("nvim-navic")
-            local function on_attach(client, bufnr)
-                navic.attach(client, bufnr)
+            local py_root_markers = {
+                ".git",
+                ".gitignore",
+                ".gimodules",
+                ".gitlab-ci.yml",
+                ".pre-commit-config.yml",
+                ".pre-commit-config.yaml",
+                "setup.py",
+                "main.py",
+                "setup.cfg",
+                "pyproject.toml",
+                "requirements.txt",
+            }
+
+            local function format_buffer()
+                local ok, conform = pcall(require, "conform")
+                if ok then
+                    conform.format({ async = true, lsp_fallback = true })
+                else
+                    vim.lsp.buf.format({ async = true })
+                end
             end
 
+            local function basedpyright_root_dir(bufnr, on_dir)
+                local fname = vim.api.nvim_buf_get_name(bufnr)
+                local start_dir = fname ~= "" and vim.fs.dirname(fname) or vim.fn.getcwd()
+                local found = vim.fs.find(py_root_markers, { upward = true, path = start_dir })[1]
+                on_dir(found and vim.fs.dirname(found) or start_dir)
+            end
 
-            lspconfig['lua_ls'].setup({ capabilities = capabilities })
-            lspconfig['clangd'].setup({ capabilities = capabilities })
-            lspconfig['rust_analyzer'].setup({ capabilities = capabilities })
-            lspconfig.dockerls.setup({ capabilities = capabilities, on_attach = on_attach })
-            lspconfig.jsonls.setup({ capabilities = capabilities, on_attach = on_attach })
-            lspconfig.basedpyright.setup({
-                on_attach = on_attach,
-                capabilities = capabilities,
-                single_file_support = true,
-                root_dir = function(fname)
-                    return util.root_pattern(
-                        ".git",
-                        ".gitignore",
-                        ".gimodules",
-                        ".gitlab-ci.yml",
-                        ".pre-commit-config.yml",
-                        ".pre-commit-config.yaml",
-                        "setup.py",
-                        "main.py",
-                        "setup.cfg",
-                        "pyproject.toml",
-                        "requirements.txt"
-                    )(fname) or vim.fs.dirname(fname)
+            vim.api.nvim_create_autocmd('LspAttach', {
+                group = vim.api.nvim_create_augroup('UserLspConfig', { clear = true }),
+                callback = function(args)
+                    local bufnr = args.buf
+                    local client = vim.lsp.get_client_by_id(args.data.client_id)
+                    if not client or client.name == "copilot" then return end
+
+                    if client:supports_method('textDocument/documentSymbol') then
+                        navic.attach(client, bufnr)
+                    end
+                    if client:supports_method('textDocument/inlayHint') then
+                        vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
+                    end
+
+                    local opts = { buffer = bufnr }
+                    vim.keymap.set('n', 'K', function()
+                        if vim.bo.filetype == "rust" then
+                            vim.cmd.RustLsp({ 'hover', 'actions' })
+                        else
+                            vim.lsp.buf.hover()
+                        end
+                    end, opts)
+                    vim.keymap.set('n', 'gd', function()
+                        if pcall(require, "snacks") then
+                            Snacks.picker.lsp_definitions({ include_declaration = false })
+                        else
+                            vim.lsp.buf.definition()
+                        end
+                    end, opts)
+                    vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, opts)
+                    vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, opts)
+                    vim.keymap.set('n', 'go', vim.lsp.buf.type_definition, opts)
+                    vim.keymap.set('n', 'gr', function()
+                        if pcall(require, "snacks") then
+                            Snacks.picker.lsp_references({ include_declaration = false })
+                        else
+                            vim.lsp.buf.references()
+                        end
+                    end, opts)
+                    vim.keymap.set('n', 'gs', vim.lsp.buf.signature_help, opts)
+                    vim.keymap.set('n', '<F2>', vim.lsp.buf.rename, opts)
+                    vim.keymap.set({ 'n', 'x' }, '<F3>', format_buffer, opts)
+                    vim.keymap.set('n', '<F4>', vim.lsp.buf.code_action, opts)
                 end,
+            })
+
+            vim.lsp.config('*', { capabilities = capabilities })
+            vim.lsp.config('lua_ls', {
+                settings = {
+                    Lua = {
+                        diagnostics = {
+                            globals = { "vim" },
+                        },
+                    },
+                },
+            })
+            vim.lsp.config('clangd', {
+                cmd = {
+                    "clangd",
+                    "--background-index",
+                    "--clang-tidy",
+                    "--header-insertion=never",
+                    "--offset-encoding=utf-16",
+                },
+            })
+            vim.lsp.config('dockerls', {})
+            vim.lsp.config('jsonls', {})
+            vim.lsp.config('cmake', {})
+            vim.lsp.config('buf_ls', {})
+            vim.lsp.config('marksman', {
+                filetypes = { 'markdown' },
+            })
+            vim.lsp.config('basedpyright', {
+                single_file_support = true,
+                root_dir = basedpyright_root_dir,
                 settings = {
                     pyright = {
                         disableLanguageServices = false,
@@ -258,6 +338,17 @@ local plugins = {
                     },
                 },
             })
+
+            vim.lsp.enable({
+                'lua_ls',
+                'clangd',
+                'dockerls',
+                'jsonls',
+                'cmake',
+                'buf_ls',
+                'marksman',
+                'basedpyright',
+            })
         end
     },
 
@@ -265,40 +356,6 @@ local plugins = {
     {
         "p00f/clangd_extensions.nvim",
         dependencies = "neovim/nvim-lspconfig",
-    },
-
-    -- Inlay hints for various language servers
-    {
-        "lvimuser/lsp-inlayhints.nvim",
-        config = function()
-            require("lsp-inlayhints").setup({
-                inlay_hints = {
-                    parameter_hints = {
-                        show = true,
-                        prefix = "<- ",
-                        separator = ", ",
-                        remove_colon_start = false,
-                        remove_colon_end = true,
-                    },
-                    type_hints = {
-                        show = true,
-                        prefix = "",
-                        separator = ", ",
-                        remove_colon_start = false,
-                        remove_colon_end = true,
-                    },
-                    only_current_line = false,
-                    labels_separator = "  ",
-                    max_len_align = false,
-                    max_len_align_padding = 1,
-                    highlight = "LspInlayHint",
-                    priority = 0,
-                },
-                enabled_at_startup = true,
-                debug_mode = false,
-            })
-        end,
-        cond = not vim.g.vscode,
     },
 
     -- rust

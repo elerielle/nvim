@@ -24,6 +24,7 @@ vim.keymap.set("n", "<leader>hs", ":split<CR>")
 
 vim.keymap.set("n", "<leader>tr", ":lua require('neotest').run.run()<CR>")
 vim.keymap.set("n", "<leader>td", ":lua require('neotest').run.run(){strategy = 'dap'}<CR>")
+vim.keymap.set("n", "<leader>mp", "<cmd>MarkdownPreviewToggle<CR>")
 
 
 
@@ -31,17 +32,13 @@ vim.keymap.set("n", "<leader>td", ":lua require('neotest').run.run(){strategy = 
 
 
 
-vim.keymap.set('n', 'K', '<cmd>lua vim.lsp.buf.hover()<cr>')
-vim.keymap.set('n', 'gd', '<cmd>lua vim.lsp.buf.definition()<cr>')
-vim.keymap.set('n', 'gD', '<cmd>lua vim.lsp.buf.declaration()<cr>')
-vim.keymap.set('n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<cr>')
-vim.keymap.set('n', 'go', '<cmd>lua vim.lsp.buf.type_definition()<cr>')
-vim.keymap.set('n', 'gr', '<cmd>lua vim.lsp.buf.references()<cr>')
-vim.keymap.set('n', 'gs', '<cmd>lua vim.lsp.buf.signature_help()<cr>')
-vim.keymap.set('n', '<F2>', '<cmd>lua vim.lsp.buf.rename()<cr>')
-vim.keymap.set({ 'n', 'x' }, '<F3>', '<cmd>lua vim.lsp.buf.format({async = true})<cr>')
-vim.keymap.set('n', '<F4>', '<cmd>lua vim.lsp.buf.code_action()<cr>')
---
 vim.keymap.set('n', '<leader>fi', '<cmd>lua vim.lsp.buf.code_action()<CR>')
 vim.keymap.set('n', '<leader>re', '<cmd>lua vim.lsp.buf.rename()<CR>')
-vim.keymap.set('n', '<leader>fo', '<cmd> lua vim.lsp.buf.format()<CR>')
+vim.keymap.set('n', '<leader>fo', function()
+    local ok, conform = pcall(require, "conform")
+    if ok then
+        conform.format({ async = true, lsp_fallback = true })
+    else
+        vim.lsp.buf.format({ async = true })
+    end
+end)

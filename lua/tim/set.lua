@@ -23,3 +23,10 @@ vim.opt.updatetime = 50
 vim.g.mapleader = " "
 
 vim.opt.ignorecase = true
+
+-- Treat MDX as markdown so marksman can attach without unknown filetype warnings.
+vim.filetype.add({
+    extension = {
+        mdx = "markdown",
+    },
+})
