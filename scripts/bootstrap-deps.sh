@@ -26,17 +26,25 @@ require_cmd nvim
 require_cmd npm
 require_cmd python3
 require_cmd gem
+require_cmd ruby
 require_cmd cpanm
 require_cmd rg
 require_cmd git
 
+USER_LOCAL_BIN="$HOME/.local/bin"
+NPM_PREFIX="$HOME/.local"
+RUBY_USER_BIN="$(ruby -r rubygems -e 'print Gem.user_dir')/bin"
+PERL_LOCAL_LIB="$HOME/.local/perl5"
+PERL_USER_BIN="$PERL_LOCAL_LIB/bin"
+export PATH="$USER_LOCAL_BIN:$RUBY_USER_BIN:$PERL_USER_BIN:$PATH"
+
 log "Installing Neovim provider dependencies"
-run npm install -g neovim
+run npm install --global --prefix "$NPM_PREFIX" neovim
 if ! python3 -m pip install --user --upgrade --break-system-packages pynvim; then
   run python3 -m pip install --user --upgrade pynvim
 fi
 run gem install --user-install neovim
-run cpanm --quiet --notest Neovim::Ext
+run cpanm --quiet --notest --local-lib-contained "$PERL_LOCAL_LIB" Neovim::Ext
 
 log "Syncing plugins and running plugin build hooks"
 run nvim --headless -u "$INIT_LUA" '+Lazy! sync' '+qa'
