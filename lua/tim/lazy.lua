@@ -90,6 +90,8 @@ local plugins = {
     {
         'mfussenegger/nvim-dap'
     },
+    { "theHamsta/nvim-dap-virtual-text", opts = {}, dependencies = { "mfussenegger/nvim-dap" } },
+    { "mfussenegger/nvim-jdtls", ft = { "java" } },
     { "rcarriga/nvim-dap-ui",           dependencies = { "mfussenegger/nvim-dap", "nvim-neotest/nvim-nio" } },
     -- { 'thedenisnikulin/vim-cyberpunk' },
     { "catppuccin/nvim",                name = "catppuccin",                                                priority = 1000 },
@@ -173,8 +175,8 @@ local plugins = {
                 formatters_by_ft = {
                     lua = { "stylua" },
                     python = { "isort", "black" },
-                    javascript = { { "prettierd", "prettier" } },
-                    typescript = { { "prettierd", "prettier" } },
+                    javascript = { "prettierd", "prettier", stop_after_first = true },
+                    typescript = { "prettierd", "prettier", stop_after_first = true },
                     cpp = { "clang-format" },
                     c = { "clang-format" },
                     cmake = { "cmake-format" },
@@ -251,7 +253,7 @@ local plugins = {
                 callback = function(args)
                     local bufnr = args.buf
                     local client = vim.lsp.get_client_by_id(args.data.client_id)
-                    if not client or client.name == "copilot" then return end
+                    if not client then return end
 
                     if client:supports_method('textDocument/documentSymbol') then
                         navic.attach(client, bufnr)
@@ -384,8 +386,6 @@ local plugins = {
         dependencies = {
             "rafamadriz/friendly-snippets",
             { "L3MON4D3/LuaSnip", version = "v2.*" },
-            "giuxtaposition/blink-cmp-copilot",
-            "zbirenbaum/copilot.lua",
         },
         version = "*",
         -- build = "cargo build --release",
